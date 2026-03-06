@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="toolbar_bg">#F5F5F5</color>
+    <color name="tab_bg">#FFFFFF</color>
+    <color name="tab_text">#757575</color>
+    <color name="path_bar_bg">#EEEEEE</color>
+    <color name="path_text">#424242</color>
+    <color name="icon_color">#616161</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="selection_bar_bg">#2196F3</color>
+</resources>
