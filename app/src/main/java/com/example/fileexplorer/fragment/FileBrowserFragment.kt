@@ -79,6 +79,7 @@ class FileBrowserFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = FileListAdapter(
+            context = requireContext(),
             onItemClick = { item ->
                 if (item.isDirectory) navigateTo(item.file)
                 else openFile(item)

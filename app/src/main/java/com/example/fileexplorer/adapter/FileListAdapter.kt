@@ -1,5 +1,6 @@
 package com.example.fileexplorer.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fileexplorer.R
 import com.example.fileexplorer.model.FileItem
+import com.example.fileexplorer.util.ThumbnailLoader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class FileListAdapter(
+    private val context: Context,
     private val onItemClick: (FileItem) -> Unit,
     private val onItemLongClick: (FileItem) -> Unit,
     private val onSelectionChanged: (Int) -> Unit
@@ -40,9 +43,22 @@ class FileListAdapter(
         val item = items[position]
 
         holder.name.text = item.name
-        holder.icon.setImageResource(
-            if (item.isDirectory) R.drawable.ic_folder else R.drawable.ic_file
-        )
+
+        val file = item.file
+        when {
+            item.isDirectory -> {
+                holder.icon.setImageResource(R.drawable.ic_folder)
+            }
+            ThumbnailLoader.isImage(file) -> {
+                ThumbnailLoader.load(context, file, holder.icon, R.drawable.ic_file)
+            }
+            ThumbnailLoader.isApk(file) -> {
+                ThumbnailLoader.load(context, file, holder.icon, R.drawable.ic_file)
+            }
+            else -> {
+                holder.icon.setImageResource(R.drawable.ic_file)
+            }
+        }
 
         val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
         holder.info.text = if (item.isDirectory) {
