@@ -349,7 +349,12 @@ class FileBrowserFragment : Fragment() {
                 setDataAndType(uri, mime)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivity(Intent.createChooser(intent, "选择应用打开"))
+            // APK 安装不能用 createChooser，否则 URI 权限无法传递给包安装程序
+            if (mime == "application/vnd.android.package-archive") {
+                startActivity(intent)
+            } else {
+                startActivity(Intent.createChooser(intent, "选择应用打开"))
+            }
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(context, "未找到可以打开此文件的应用", Toast.LENGTH_SHORT).show()
         }
