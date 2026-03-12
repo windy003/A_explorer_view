@@ -26,17 +26,6 @@
             </intent-filter>
         </activity>
 
-        <!-- SAF DocumentsProvider：让系统/浏览器文件选择器能找到此 App -->
-        <provider
-            android:name=".provider.FileDocumentsProvider"
-            android:authorities="${applicationId}.documents"
-            android:exported="true"
-            android:grantUriPermissions="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS">
-            <intent-filter>
-                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
-            </intent-filter>
-        </provider>
 
         <provider
             android:name="androidx.core.content.FileProvider"
