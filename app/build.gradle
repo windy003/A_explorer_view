@@ -12,7 +12,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 1
-        versionName "2026/3/10-1"
+        versionName "2026/3/16-1"
     }
 
     buildTypes {
@@ -39,4 +39,5 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 }

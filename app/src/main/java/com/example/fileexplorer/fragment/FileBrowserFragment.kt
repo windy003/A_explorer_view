@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.fileexplorer.R
 import com.example.fileexplorer.adapter.FileListAdapter
 import com.example.fileexplorer.model.FileItem
@@ -45,6 +46,7 @@ class FileBrowserFragment : Fragment() {
     private lateinit var selectionBar: LinearLayout
     private lateinit var tvSelectedCount: TextView
     private lateinit var btnRename: MaterialButton
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     private val dirStack = ArrayDeque<File>()
     private var currentDir: File = Environment.getExternalStorageDirectory()
@@ -66,6 +68,11 @@ class FileBrowserFragment : Fragment() {
         selectionBar = view.findViewById(R.id.selectionBar)
         tvSelectedCount = view.findViewById(R.id.tvSelectedCount)
         btnRename = view.findViewById(R.id.btnRename)
+        swipeRefresh = view.findViewById(R.id.swipeRefresh)
+        swipeRefresh.setOnRefreshListener {
+            loadFiles()
+            swipeRefresh.isRefreshing = false
+        }
 
         view.findViewById<ImageButton>(R.id.btnUp).setOnClickListener { goBack() }
         view.findViewById<ImageButton>(R.id.btnHome).setOnClickListener {
