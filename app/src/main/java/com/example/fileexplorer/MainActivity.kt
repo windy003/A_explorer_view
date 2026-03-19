@@ -7,7 +7,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.StatFs
 import android.provider.Settings
+import android.text.format.Formatter
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -27,12 +31,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var pagerAdapter: FilePagerAdapter
+    private lateinit var tvStorageInfo: TextView
+    private lateinit var pbStorage: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         PrefsManager.init(this)
+
+        tvStorageInfo = findViewById(R.id.tvStorageInfo)
+        pbStorage = findViewById(R.id.pbStorage)
+        updateStorageInfo()
 
         // 工具栏按钮
         findViewById<MaterialButton>(R.id.btnFavorites).setOnClickListener {
@@ -72,6 +82,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkPermissions()
+    }
+
+    private fun updateStorageInfo() {
+        val path = Environment.getExternalStorageDirectory()
+        val stat = StatFs(path.absolutePath)
+        val total = stat.totalBytes
+        val free = stat.availableBytes
+        val used = total - free
+        val usedStr = Formatter.formatFileSize(this, used)
+        val totalStr = Formatter.formatFileSize(this, total)
+        tvStorageInfo.text = "$usedStr / $totalStr"
+        pbStorage.progress = if (total > 0) ((used * 100) / total).toInt() else 0
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateStorageInfo()
     }
 
     private fun getCurrentFragment() =
