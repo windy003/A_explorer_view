@@ -81,6 +81,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // 恢复上次选中的标签页
+        val lastTab = PrefsManager.getLastTab()
+        if (lastTab in 0 until pagerAdapter.itemCount) {
+            viewPager.setCurrentItem(lastTab, false)
+        }
+
+        // 监听标签页切换，保存当前选中的标签
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                PrefsManager.saveLastTab(position)
+            }
+        })
+
         checkPermissions()
     }
 

@@ -53,4 +53,22 @@ object PrefsManager {
         if (list.size > MAX_RECENT) list.subList(MAX_RECENT, list.size).clear()
         prefs.edit().putString(KEY_RECENT, list.joinToString("\n")).apply()
     }
+
+    // ---- 标签页状态记忆 ----
+
+    private const val KEY_LAST_TAB = "last_tab"
+    private const val KEY_TAB_PATH_PREFIX = "tab_path_"
+
+    fun saveLastTab(index: Int) {
+        prefs.edit().putInt(KEY_LAST_TAB, index).apply()
+    }
+
+    fun getLastTab(): Int = prefs.getInt(KEY_LAST_TAB, 0)
+
+    fun saveTabPath(tabIndex: Int, path: String) {
+        prefs.edit().putString(KEY_TAB_PATH_PREFIX + tabIndex, path).apply()
+    }
+
+    fun getTabPath(tabIndex: Int): String? =
+        prefs.getString(KEY_TAB_PATH_PREFIX + tabIndex, null)
 }

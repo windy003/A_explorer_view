@@ -50,6 +50,7 @@ class FileBrowserFragment : Fragment() {
 
     private val dirStack = ArrayDeque<File>()
     private var currentDir: File = Environment.getExternalStorageDirectory()
+    private var tabIndex: Int = 0
 
     companion object {
         private const val ARG_INDEX = "tab_index"
@@ -63,6 +64,17 @@ class FileBrowserFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_file_browser, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        tabIndex = arguments?.getInt(ARG_INDEX, 0) ?: 0
+
+        // 恢复上次保存的路径
+        val savedPath = PrefsManager.getTabPath(tabIndex)
+        if (savedPath != null) {
+            val savedDir = File(savedPath)
+            if (savedDir.exists() && savedDir.isDirectory) {
+                currentDir = savedDir
+            }
+        }
+
         tvPath = view.findViewById(R.id.tvPath)
         fabPaste = view.findViewById(R.id.fabPaste)
         selectionBar = view.findViewById(R.id.selectionBar)
@@ -153,6 +165,7 @@ class FileBrowserFragment : Fragment() {
         currentDir = dir
         loadFiles()
         PrefsManager.addRecent(dir.absolutePath)
+        PrefsManager.saveTabPath(tabIndex, dir.absolutePath)
         updatePasteFab()
     }
 
