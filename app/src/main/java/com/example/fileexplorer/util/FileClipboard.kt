@@ -37,8 +37,12 @@ object FileClipboard {
         val isCut = operation == Operation.CUT
 
         for (src in files) {
-            val dest = File(destDir, src.name)
+            var dest = File(destDir, src.name)
             try {
+                // 如果源文件和目标文件是同一个文件（同目录粘贴），需要重命名
+                if (!isCut && dest.absolutePath == src.absolutePath) {
+                    dest = generateUniqueName(destDir, src)
+                }
                 if (src.isDirectory) {
                     copyDirectory(src, dest)
                 } else {
@@ -55,6 +59,21 @@ object FileClipboard {
 
         return if (failCount == 0) "已粘贴 $successCount 个文件"
         else "粘贴完成：成功 $successCount，失败 $failCount"
+    }
+
+    /**
+     * 生成不冲突的文件名，如 video.mp4 → video (1).mp4
+     */
+    private fun generateUniqueName(destDir: File, src: File): File {
+        val nameWithoutExt = src.nameWithoutExtension
+        val ext = if (src.extension.isNotEmpty()) ".${src.extension}" else ""
+        var counter = 1
+        var candidate: File
+        do {
+            candidate = File(destDir, "$nameWithoutExt ($counter)$ext")
+            counter++
+        } while (candidate.exists())
+        return candidate
     }
 
     private fun copyDirectory(src: File, dest: File) {
