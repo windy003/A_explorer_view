@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.fileexplorer.R
+import com.example.fileexplorer.TextEditorActivity
 import com.example.fileexplorer.adapter.FileListAdapter
 import com.example.fileexplorer.model.FileItem
 import com.example.fileexplorer.util.FileClipboard
@@ -338,6 +339,13 @@ class FileBrowserFragment : Fragment() {
     // -------- 解压 --------
 
     private fun openFile(item: FileItem) {
+        if (isEditableText(item.name)) {
+            startActivity(Intent(requireContext(), TextEditorActivity::class.java).apply {
+                putExtra(TextEditorActivity.EXTRA_PATH, item.file.absolutePath)
+            })
+            return
+        }
+
         if (item.name.endsWith(".zip", ignoreCase = true)) {
             AlertDialog.Builder(requireContext())
                 .setTitle(item.name)
@@ -378,6 +386,14 @@ class FileBrowserFragment : Fragment() {
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(context, "未找到可以打开此文件的应用", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun isEditableText(fileName: String): Boolean {
+        val ext = fileName.substringAfterLast('.', "").lowercase()
+        return ext in setOf(
+            "txt", "log", "md", "csv", "json", "xml",
+            "java", "kt", "py", "c", "cpp", "h", "js", "css"
+        )
     }
 
     private fun getMimeType(fileName: String): String? {

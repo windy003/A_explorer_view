@@ -26,6 +26,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".TextEditorActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustResize" />
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
