@@ -49,7 +49,6 @@ class FileBrowserFragment : Fragment() {
     private lateinit var btnRename: MaterialButton
     private lateinit var swipeRefresh: SwipeRefreshLayout
 
-    private val dirStack = ArrayDeque<File>()
     private var currentDir: File = Environment.getExternalStorageDirectory()
     private var tabIndex: Int = 0
 
@@ -91,7 +90,6 @@ class FileBrowserFragment : Fragment() {
         view.findViewById<ImageButton>(R.id.btnHome).setOnClickListener {
             adapter.exitSelectionMode()
             hideSelectionBar()
-            dirStack.clear()
             navigateTo(Environment.getExternalStorageDirectory())
         }
 
@@ -162,7 +160,6 @@ class FileBrowserFragment : Fragment() {
             adapter.exitSelectionMode()
             hideSelectionBar()
         }
-        dirStack.addLast(currentDir)
         currentDir = dir
         loadFiles()
         PrefsManager.addRecent(dir.absolutePath)
@@ -180,7 +177,11 @@ class FileBrowserFragment : Fragment() {
         adapter.submitList(files)
     }
 
-    fun canGoBack(): Boolean = adapter.isSelectionMode || dirStack.size > 1
+    fun canGoBack(): Boolean {
+        if (adapter.isSelectionMode) return true
+        val parent = currentDir.parentFile
+        return parent != null && parent.isDirectory && parent.canRead()
+    }
 
     fun goBack() {
         if (adapter.isSelectionMode) {
@@ -188,10 +189,15 @@ class FileBrowserFragment : Fragment() {
             hideSelectionBar()
             return
         }
-        if (dirStack.size > 1) {
-            currentDir = dirStack.removeLast()
+        // 返回文件系统的真实上层目录，不依赖本次会话的浏览历史
+        val parent = currentDir.parentFile
+        if (parent != null && parent.isDirectory && parent.canRead()) {
+            currentDir = parent
             loadFiles()
+            PrefsManager.saveTabPath(tabIndex, currentDir.absolutePath)
             updatePasteFab()
+        } else {
+            Toast.makeText(context, "已经是最上层目录", Toast.LENGTH_SHORT).show()
         }
     }
 
