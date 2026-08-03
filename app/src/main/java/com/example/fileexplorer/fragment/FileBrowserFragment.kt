@@ -433,6 +433,7 @@ class FileBrowserFragment : Fragment() {
             // 文本
             "txt", "log", "md", "csv"          -> "text/plain"
             "html", "htm"                       -> "text/html"
+            "mht", "mhtml"                       -> "multipart/related"
             "xml"                               -> "text/xml"
             "json"                              -> "application/json"
             "js"                                -> "text/javascript"
