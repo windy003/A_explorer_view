@@ -7,8 +7,6 @@ object PrefsManager {
 
     private const val PREFS_NAME = "file_explorer_prefs"
     private const val KEY_FAVORITES = "favorites"
-    private const val KEY_RECENT = "recent"
-    private const val MAX_RECENT = 30
 
     private lateinit var prefs: SharedPreferences
 
@@ -39,19 +37,17 @@ object PrefsManager {
 
     fun isFavorite(path: String): Boolean = getFavorites().contains(path)
 
-    // ---- 最近访问 ----
+    // ---- 回收站 ----
 
-    fun getRecent(): List<String> {
-        val raw = prefs.getString(KEY_RECENT, "") ?: ""
+    private const val KEY_RECYCLE_BIN = "recycle_bin"
+
+    fun getRecycleRecords(): List<String> {
+        val raw = prefs.getString(KEY_RECYCLE_BIN, "") ?: ""
         return if (raw.isEmpty()) emptyList() else raw.split("\n").filter { it.isNotBlank() }
     }
 
-    fun addRecent(path: String) {
-        val list = getRecent().toMutableList()
-        list.remove(path)
-        list.add(0, path)
-        if (list.size > MAX_RECENT) list.subList(MAX_RECENT, list.size).clear()
-        prefs.edit().putString(KEY_RECENT, list.joinToString("\n")).apply()
+    fun saveRecycleRecords(records: List<String>) {
+        prefs.edit().putString(KEY_RECYCLE_BIN, records.joinToString("\n")).apply()
     }
 
     // ---- 标签页状态记忆 ----

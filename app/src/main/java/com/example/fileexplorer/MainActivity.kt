@@ -19,8 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.fileexplorer.adapter.FilePagerAdapter
 import com.example.fileexplorer.sheet.FavoritesBottomSheet
-import com.example.fileexplorer.sheet.RecentBottomSheet
 import com.example.fileexplorer.util.PrefsManager
+import com.example.fileexplorer.util.RecycleBinManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         PrefsManager.init(this)
+        RecycleBinManager.purgeExpired(this)
 
         tvStorageInfo = findViewById(R.id.tvStorageInfo)
         pbStorage = findViewById(R.id.pbStorage)
@@ -57,10 +58,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "已添加到收藏夹", Toast.LENGTH_SHORT).show()
         }
 
-        findViewById<MaterialButton>(R.id.btnRecent).setOnClickListener {
-            RecentBottomSheet { path ->
-                getCurrentFragment()?.navigateTo(File(path))
-            }.show(supportFragmentManager, "recent")
+        findViewById<MaterialButton>(R.id.btnRecycleBin).setOnClickListener {
+            startActivity(Intent(this, RecycleBinActivity::class.java))
         }
 
         // ViewPager2 + TabLayout

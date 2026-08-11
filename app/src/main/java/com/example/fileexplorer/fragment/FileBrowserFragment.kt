@@ -26,6 +26,7 @@ import com.example.fileexplorer.adapter.FileListAdapter
 import com.example.fileexplorer.model.FileItem
 import com.example.fileexplorer.util.FileClipboard
 import com.example.fileexplorer.util.PrefsManager
+import com.example.fileexplorer.util.RecycleBinManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.BufferedInputStream
@@ -162,7 +163,6 @@ class FileBrowserFragment : Fragment() {
         }
         currentDir = dir
         loadFiles()
-        PrefsManager.addRecent(dir.absolutePath)
         PrefsManager.saveTabPath(tabIndex, dir.absolutePath)
         updatePasteFab()
     }
@@ -523,13 +523,13 @@ class FileBrowserFragment : Fragment() {
         if (selected.isEmpty()) return
         AlertDialog.Builder(requireContext())
             .setTitle("确认删除")
-            .setMessage("删除 ${selected.size} 个文件？此操作不可恢复。")
+            .setMessage("将 ${selected.size} 个文件移入回收站？3 天后将自动彻底清除。")
             .setPositiveButton("删除") { _, _ ->
                 var ok = 0; var fail = 0
                 selected.forEach { item ->
-                    if (item.file.deleteRecursively()) ok++ else fail++
+                    if (RecycleBinManager.moveToRecycleBin(requireContext(), item.file)) ok++ else fail++
                 }
-                Toast.makeText(context, "已删除 $ok 个，失败 $fail 个", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "已移入回收站 $ok 个，失败 $fail 个", Toast.LENGTH_SHORT).show()
                 adapter.exitSelectionMode()
                 hideSelectionBar()
                 loadFiles()
