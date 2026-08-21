@@ -15,4 +15,5 @@
     <color name="divider">#E0E0E0</color>
     <color name="selection_bar_bg">#2196F3</color>
     <color name="window_background">#FFFFFF</color>
+    <color name="file_extension">#E53935</color>
 </resources>

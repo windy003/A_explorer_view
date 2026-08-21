@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fileexplorer.R
 import com.example.fileexplorer.model.FileItem
+import com.example.fileexplorer.util.FileNameDisplay
 import com.example.fileexplorer.util.ThumbnailLoader
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,7 +43,7 @@ class FileListAdapter(
     override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
         val item = items[position]
 
-        holder.name.text = item.name
+        FileNameDisplay.set(holder.name, item.name)
 
         val file = item.file
         when {

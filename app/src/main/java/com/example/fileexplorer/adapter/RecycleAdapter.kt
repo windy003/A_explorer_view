@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fileexplorer.R
 import com.example.fileexplorer.model.RecycleEntry
+import com.example.fileexplorer.util.FileNameDisplay
 import com.example.fileexplorer.util.RecycleBinManager
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -36,7 +37,7 @@ class RecycleAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val entry = items[position]
-        holder.tvName.text = entry.originalName
+        FileNameDisplay.set(holder.tvName, entry.originalName)
         holder.tvPath.text = entry.originalPath
 
         val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
